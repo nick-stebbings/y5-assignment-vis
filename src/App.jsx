@@ -12,12 +12,33 @@ export const App = () => {
 
   // the splits CSV file is the split times (in seconds) between each mile on the marathon
   // for ~7000 athletes
+  function divideRows(divisionIndex, valuesArray) {
+    return valuesArray.reduce((acc, el, idx) => {
+      if (idx % 40 === 0) {
+        acc.push([]);
+        divisionIndex += 40;
+      }
+      if (idx < divisionIndex - 1) {
+        acc.slice(-1)[0].push(el);
+      }
+      return acc;
+    }, []);
+  }
 
   return {
     oncreate: (vnode) => {
-      d3.text("splits.csv").then((text) => {
-        const splits = d3.csvParseRows(text, (d) => d.map(Number));
+      d3.text("metocean.tsv").then((text) => {
+        const rows = d3.tsvParseRows(text, (d) => d)[0];
+        const headings = rows.slice(0, 40);
+        const values = rows.slice(41);
+        console.log(headings);
+        console.log(values);
 
+        const valuesArrays = divideRows(40, values);
+        console.log("valuesArrays :>> ", valuesArrays);
+
+        const metreValues = values.filter((v) => v.match(/.*(\[m\])$/));
+        console.log("metreValues :>> ", metreValues);
         // group into buckets
         let grouped = d3
           .groups(splits, bucketByHour)
@@ -98,6 +119,7 @@ export const App = () => {
           .xLabel("Distance (miles)")
           .chartLabel("London Marathon 2016 Pacing vs. Finish Time")
           .svgPlotArea(multi);
+
         d3.select(vnode.dom)
           .datum(grouped.concat([annotations]))
           .call(chart);
