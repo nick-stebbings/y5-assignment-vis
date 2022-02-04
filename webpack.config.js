@@ -6,7 +6,7 @@ module.exports = {
     filename: "app.js",
     path: path.resolve(__dirname, "dist"),
   },
-  devtool: "source-map",
+  // devtool: "source-map",
   devServer: {
     port: 3000,
     static: {
@@ -34,6 +34,11 @@ module.exports = {
           },
           "postcss-loader",
         ],
+      },
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: { loader: "babel-loader" },
       },
     ],
   },
