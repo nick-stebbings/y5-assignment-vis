@@ -4,14 +4,6 @@ import m from "mithril";
 import "./App.css";
 
 export const App = () => {
-  const bucketByHour = (splits) => {
-    const secondsPerHour = 60 * 60;
-    const hours = d3.sum(splits) / secondsPerHour;
-    return Math.floor(hours * 2) / 2;
-  };
-
-  // the splits CSV file is the split times (in seconds) between each mile on the marathon
-  // for ~7000 athletes
   function divideRows(divisionIndex, valuesArray) {
     return valuesArray.reduce((acc, el, idx) => {
       if (idx % 40 === 0) {
@@ -180,3 +172,7 @@ export const App = () => {
     },
   };
 };
+
+// PEDAC
+
+// P: We have a
