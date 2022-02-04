@@ -25,6 +25,39 @@ export const App = () => {
     }, []);
   }
 
+  function getIndicesForMetric(metricSymbol, headings) {
+    switch (metricSymbol) {
+      case "m":
+        return headings
+          .map((v, i) => (v.match(/.*(\[m\])$/) ? i : ""))
+          .filter((v) => !!v);
+      case "s":
+        return headings
+          .map((v, i) => (v.match(/.*(\[s\])$/) ? i : ""))
+          .filter((v) => !!v);
+      case "deg":
+        return headings
+          .map((v, i) => (v.match(/.*(\[deg\])$/) ? i : ""))
+          .filter((v) => !!v);
+      case "kts":
+        return headings
+          .map((v, i) => (v.match(/.*(\[kts\])$/) ? i : ""))
+          .filter((v) => !!v);
+      case "mm/hr":
+        return headings
+          .map((v, i) => (v.match(/.*(\[mm\/hr\])$/) ? i : ""))
+          .filter((v) => !!v);
+      case "%":
+        return headings
+          .map((v, i) => (v.match(/.*(\[%\])$/) ? i : ""))
+          .filter((v) => !!v);
+      case "C":
+        return headings
+          .map((v, i) => (v.match(/.*(\[C\])$/) ? i : ""))
+          .filter((v) => !!v);
+    }
+  }
+
   return {
     oncreate: (vnode) => {
       d3.text("metocean.tsv").then((text) => {
@@ -37,8 +70,25 @@ export const App = () => {
         const valuesArrays = divideRows(40, values);
         console.log("valuesArrays :>> ", valuesArrays);
 
-        const metreValues = values.filter((v) => v.match(/.*(\[m\])$/));
-        console.log("metreValues :>> ", metreValues);
+        const metreValuesIndices = getIndicesForMetric("m", headings);
+        const secondValuesIndices = getIndicesForMetric("s", headings);
+        const degValuesIndices = getIndicesForMetric("deg", headings);
+        const kntsValuesIndices = getIndicesForMetric("kts", headings);
+        const mmhrValuesIndices = getIndicesForMetric("mm/hr", headings);
+        const cValuesIndices = getIndicesForMetric("C", headings);
+        const percentageValuesIndices = getIndicesForMetric("%", headings);
+
+        const separatedValues = {
+          metreValuesIndices,
+          secondValuesIndices,
+          degValuesIndices,
+          kntsValuesIndices,
+          mmhrValuesIndices,
+          cValuesIndices,
+          percentageValuesIndices,
+        };
+
+        console.log("metreValues :>> ", separatedValues);
         // group into buckets
         let grouped = d3
           .groups(splits, bucketByHour)
