@@ -39,3 +39,5 @@ export const HEADINGS_INFO = {
   ss: "Storm surge elevation",
   sst: "Sea surface temperature",
 };
+
+export const NUMBER_OF_MEASUREMENTS = 40;

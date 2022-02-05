@@ -3,43 +3,31 @@ import * as fc from "d3fc";
 import m from "mithril";
 import "./App.css";
 
-import HEADINGS_INFO from "./app/constants";
-import { divideRows, getIndicesForMetric } from "./app/helpers";
+import { HEADINGS_INFO, NUMBER_OF_MEASUREMENTS } from "./app/constants";
+import {
+  selectDateTimeValue,
+  transformDateArrayToDateTimeStringsArray,
+  VisObject,
+} from "./app/helpers";
 
 export const App = () => {
   return {
     oncreate: (vnode) => {
       d3.text("metocean.tsv").then((text) => {
         const rows = d3.tsvParseRows(text, (d) => d)[0];
-        const headings = rows.slice(0, 40);
-        const values = rows.slice(40);
-        // console.log(headings);
-        // console.log(values);
+        const headings = rows.slice(0, NUMBER_OF_MEASUREMENTS);
+        const values = rows.slice(NUMBER_OF_MEASUREMENTS);
 
-        const valuesArrays = divideRows(40, values);
-        console.log("valuesArrays :>> ", valuesArrays);
+        const mainVis = new VisObject(headings, values, NUMBER_OF_MEASUREMENTS);
+        mainVis.logData();
 
-        const metreValuesIndices = getIndicesForMetric("m", headings);
-        const secondValuesIndices = getIndicesForMetric("s", headings);
-        const degValuesIndices = getIndicesForMetric("deg", headings);
-        const kntsValuesIndices = getIndicesForMetric("kts", headings);
-        const mmhrValuesIndices = getIndicesForMetric("mm/hr", headings);
-        const cValuesIndices = getIndicesForMetric("C", headings);
-        const percentageValuesIndices = getIndicesForMetric("%", headings);
+        // console.log("separatedValues :>> ", separatedValues);
 
-        const separatedValues = {
-          metreValuesIndices,
-          secondValuesIndices,
-          degValuesIndices,
-          kntsValuesIndices,
-          mmhrValuesIndices,
-          cValuesIndices,
-          percentageValuesIndices,
-        };
+        // const timeAxisSeries = valuesArrays.map(selectDateTimeValue);
+        // const xAxisTicks =
+        //   transformDateArrayToDateTimeStringsArray(timeAxisSeries);
 
-        console.log("separatedValues :>> ", separatedValues);
-
-        const timeAxisSeries = valuesArrays.map((va) => new Date(va[0]));
+        // console.log("xAxisTicks :>> ", xAxisTicks);
         // // group into buckets
         // let grouped = d3
         //   .groups(splits, bucketByHour)
@@ -166,5 +154,7 @@ export const App = () => {
 // -- Scaffold an initial chart with a basic line series of one of the most prominent metrics e.g. wave height.
 
 // -- Decide on the number of divisions for the time scale and which axis it will occupy.
+// -- Format the ticks appropriately to indicate the hourly division and change of days over the course of the time scale.
+// -- Try millitary time e.g. 0100
 // -- Decide on the chart dimensions. E.g. if all 192 time divisions are to be included it is possible that a total chart width of more than 100vw will be useful.
 // -- Otherwise the division of 1 hour will have to be multiplied by 2 until we have a less crowded and more readable set of datapoints on the time axis.
