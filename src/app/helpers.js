@@ -161,5 +161,9 @@ export class VisController {
   }
 
   // Rendering
-  render() {}
+  render(vnode, seriesIndex, chart) {
+    d3.select(vnode)
+      .datum(this.getSeriesByIndex(seriesIndex)) //.concat([annotations]))
+      .call(chart);
+  }
 }

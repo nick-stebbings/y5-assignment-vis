@@ -43,8 +43,6 @@ export const App = () => {
             return data;
           });
 
-        const swhValues = mainVis.getSeriesByIndex(2);
-
         let xScale = d3.scaleTime().nice();
         const xScale2 = d3.scaleTime().domain(mainVis.getExtentByIndex(0));
 
@@ -101,39 +99,39 @@ export const App = () => {
               .on("draw.x-axis", (event, d) => {
                 // draw the axis into the svg within the d3fc-svg element
 
-                const windInfoAxis = fc
+                const windIndicatorsAxis = fc
                   .axisBottom(xScale2)
                   .tickArguments([192 / 4])
                   .tickFormat(d3.timeFormat("%H%M"))
                   .tickSizeOuter(0)
                   .decorate((sel) => {
-                    sel.selectAll(".tick path").each((d, i, domNode) => {
-                      const seriesIndex = mainVis.xAxisSeries.findIndex(
-                        (el) => el.valueOf() == d.valueOf()
-                      );
-                      const windDirectionDeg =
-                        mainVis.getSeriesByIndex(26)[seriesIndex];
-                      const windStrength =
-                        mainVis.getSeriesByIndex(25)[seriesIndex];
-
-                      d3.select(domNode[0])
-                        .attr("d", ARROW_SVG_PATH)
-                        .classed("wind-direction-arrow", true)
-                        .attr(
-                          "transform",
-                          `scale(${(0.01 * windStrength) / 2}), rotate(${
-                            windDirectionDeg - 180
-                          })` // Adjust to point in the opposite direction (of 'from')
-                        );
-                    });
+                    sel.selectAll(".tick path").each(appendWindIndicator);
                   });
-                d3.select(event.currentTarget).select("svg").call(windInfoAxis);
+                d3.select(event.currentTarget)
+                  .select("svg")
+                  .call(windIndicatorsAxis);
               });
           });
 
-        d3.select(vnode.dom)
-          .datum(swhValues) //.concat([annotations]))
-          .call(chart);
+        mainVis.render(vnode.dom, 2, chart);
+
+        function appendWindIndicator(d, i, domNode) {
+          const seriesIndex = mainVis.xAxisSeries.findIndex(
+            (el) => el.valueOf() == d.valueOf()
+          );
+          const windDirectionDeg = mainVis.getSeriesByIndex(26)[seriesIndex];
+          const windStrength = mainVis.getSeriesByIndex(25)[seriesIndex];
+
+          d3.select(domNode[0])
+            .attr("d", ARROW_SVG_PATH)
+            .classed("wind-direction-arrow", true)
+            .attr(
+              "transform",
+              `scale(${(0.01 * windStrength) / 2}), rotate(${
+                windDirectionDeg - 180
+              })` // Adjust to point in the opposite direction (of 'from')
+            );
+        }
       });
     },
     view: () => {
