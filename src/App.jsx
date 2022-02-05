@@ -4,11 +4,7 @@ import m from "mithril";
 import "./App.css";
 
 import { NUMBER_OF_MEASUREMENTS } from "./app/constants";
-import {
-  selectDateTimeValue,
-  transformDateArrayToDateTimeStringsArray,
-  VisObject,
-} from "./app/helpers";
+import { Vis, transformDateArrayToDateTimeStringsArray } from "./app/helpers";
 
 export const App = () => {
   return {
@@ -18,51 +14,8 @@ export const App = () => {
         const headings = rows.slice(0, NUMBER_OF_MEASUREMENTS);
         const values = rows.slice(NUMBER_OF_MEASUREMENTS);
 
-        const mainVis = new VisObject(headings, values, NUMBER_OF_MEASUREMENTS);
+        const mainVis = new Vis(headings, values, NUMBER_OF_MEASUREMENTS);
         mainVis.logData();
-        debugger;
-
-        // // group into buckets
-        // let grouped = d3
-        //   .groups(splits, bucketByHour)
-        //   .map(([key, values]) => ({ key, values }))
-        //   .sort((a, b) => d3.ascending(+a.key, +b.key));
-
-        // grouped.forEach((g) => {
-        //   // Each bucket contains all the splits for the given time interval. Here we
-        //   // reduce them down to a single array of splits giving the mean.
-        //   g.mean = d3
-        //     .range(0, 27)
-        //     .map((d, i) => d3.mean(g.values.map((h) => h[i])))
-        //     // and convert from seconds per mile to mph
-        //     .map((d) => 60 / (d / 60));
-        //   g.datapoints = g.values.length;
-        // });
-
-        // // use d3.pairs to pair the data allowing us to render the data as bands
-        // grouped = d3
-        //   .pairs(grouped)
-        //   .map((d) => {
-        //     const mean = d[0].mean.map((r, i) => ({
-        //       y0: r,
-        //       y1: d[1].mean[i],
-        //     }));
-        //     mean.upperKey = d[0].key;
-        //     mean.lowerKey = d[1].key;
-        //     mean.datapoints = d[0].datapoints;
-        //     return mean;
-        //   })
-        //   // remove any that don't have many points
-        //   .filter((d) => d.datapoints > 100);
-
-        // // construct an array of annotations to label the bands
-        // const annotations = grouped.map((d) => {
-        //   const f = d3.format(".1f");
-        //   return {
-        //     time: f(d.upperKey) + " - " + f(d.lowerKey),
-        //     mph: (d[26].y1 + d[26].y0) / 2,
-        //   };
-        // });
 
         const gridlines = fc.annotationSvgGridline();
 
@@ -73,7 +26,7 @@ export const App = () => {
           // .baseValue((d) => d.y1)
           .curve(d3.curveCatmullRom.alpha(0.5));
 
-        const annotation = fc
+        const annotations = fc
           .annotationSvgLine()
           .value((d) => d.mph)
           .label((d) => d.time);
@@ -93,25 +46,56 @@ export const App = () => {
         //     sel.attr("fill", (d, i) => d3.interpolateSpectral(i / 12))
         //   );
 
-        // const swhValues = valuesArrays.map((va) => va[2]);
+        const swhValues = mainVis.getSeriesByIndex(2);
 
-        // const chart = fc
-        //   .chartCartesian(d3.scaleTime(), d3.scaleLinear())
-        //   .xDomain([timeAxisSeries[0], timeAxisSeries.slice(-1)[0]])
-        //   .yDomain([
-        //     Math.min.apply(null, swhValues),
-        //     Math.max.apply(null, swhValues),
-        //   ])
-        //   .yOrient("left")
-        //   .yLabel("Height (m)")
-        //   .xLabel("Date/Time")
-        //   .chartLabel("MetOcean Data Series")
-        //   .svgPlotArea(series);
-        // // debugger;
+        let xScale = d3.scaleTime().nice();
+        const xScale2 = d3.scaleTime().domain(mainVis.getRangeByIndex(0));
+        const xAxis2TickValues = mainVis
+          .getSeriesByIndex(0)
+          .map(
+            (dateVal) =>
+              transformDateArrayToDateTimeStringsArray([new Date(dateVal)])[0]
+                .split` `[1]
+          );
 
-        // d3.select(vnode.dom)
-        //   .datum(swhValues.concat([annotations]))
-        //   .call(chart);
+        const chart = fc
+          .chartCartesian(xScale, d3.scaleLinear())
+          .xDomain(mainVis.getRangeByIndex(0))
+          .yDomain(mainVis.getRangeByIndex(2))
+          .yOrient("left")
+          .yLabel("Height (m)")
+          .xLabel("Date/Time")
+          .chartLabel("MetOcean Data Series")
+          .svgPlotArea(series)
+          .decorate((selection) => {
+            selection
+              .enter()
+              // additionally add a d3fc-svg element for the axis
+              .append("d3fc-svg")
+              // move the element into the right-axis cell
+              .style("grid-column", 3)
+              .style("grid-row", 5)
+              // and set the axis height
+              .style("height", "3em")
+              // when there's a measure event (namespaced to avoid removing existing handlers)
+              .on("measure.x-axis", (event) => {
+                // set the range on the scale to the elements width
+                xScale2.range([0, event.detail.width]);
+              })
+              .on("draw.x-axis", (event, d) => {
+                // draw the axis into the svg within the d3fc-svg element
+
+                const xAxis2 = fc
+                  .axisBottom(xScale2)
+                  .tickArguments([192 / 4])
+                  .tickCenterLabel(true);
+                d3.select(event.currentTarget).select("svg").call(xAxis2);
+              });
+          });
+
+        d3.select(vnode.dom)
+          .datum(swhValues.concat([annotations]))
+          .call(chart);
       });
     },
     view: () => {

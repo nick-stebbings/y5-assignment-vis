@@ -18,7 +18,7 @@ export function transformDateArrayToDateTimeStringsArray(datesArray) {
   });
 }
 
-export class VisObject {
+export class Vis {
   static UNITS_OF_MEASUREMENT = ["m", "s", "deg", "kts", "mm/hr", "C", "%"];
 
   static getIndicesForMetric(metricSymbol, headings) {
@@ -106,8 +106,14 @@ export class VisObject {
 
   // D3 chart prep helpers
   _calculateAndAssignRanges() {
-    this.seriesRanges = Object.values(this.series).map((seriesArr) =>
-      d3.extent(seriesArr)
+    this.seriesRanges = Object.values(this.series).map((seriesArr, i) =>
+      i == 0 // Use date extent for the first series, then linear extent
+        ? fc
+            .extentTime(seriesArr)
+            .accessors([(d) => new Date(d)])
+            .padUnit("domain")
+            .pad([20, 20])(seriesArr)
+        : fc.extentLinear(seriesArr)(seriesArr)
     );
     console.log("object :>> ", Object.values(this.series));
   }
@@ -128,6 +134,7 @@ export class VisObject {
   }
 
   //-- PUBLIC METHODS
+
   getSeriesByIndex(i) {
     return this.rows.map((row) => row[i]);
   }
