@@ -8,7 +8,7 @@ import { Chart } from "./components/Chart.jsx";
 import { HEADINGS_INFO } from "./app/constants";
 
 export const App = () => {
-  const seriesSelectedIndices = Stream([2]);
+  const seriesSelectedIndices = Stream([3]);
   return {
     oninit: (vnode) => {},
     view: () => {
@@ -16,7 +16,13 @@ export const App = () => {
         <div>
           <div className="series-selector">
             <select>
-              <option>h</option>
+              {Object.values(HEADINGS_INFO)
+                .filter((heading, idx) =>
+                  [2, 3, 9, 10, 15, 16, 22, 23, 35, 38].includes(idx)
+                )
+                .map((heading) => (
+                  <option>{heading}</option>
+                ))}
             </select>
           </div>
           <Chart seriesSelectorStream={seriesSelectedIndices} />

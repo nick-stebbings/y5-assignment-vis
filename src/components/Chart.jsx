@@ -9,7 +9,6 @@ import { VisController } from "../app/helpers";
 export const Chart = () => {
   return {
     oncreate: ({ dom, attrs: { seriesSelectorStream } }) => {
-      debugger;
       d3.text("metocean.tsv").then((text) => {
         const rows = d3.tsvParseRows(text, (d) => d)[0];
         const headings = rows.slice(0, NUMBER_OF_MEASUREMENTS);
@@ -20,7 +19,7 @@ export const Chart = () => {
           values,
           NUMBER_OF_MEASUREMENTS
         );
-        // mainVis.logData();
+        mainVis.logData();
 
         const line = fc
           .seriesSvgLine()

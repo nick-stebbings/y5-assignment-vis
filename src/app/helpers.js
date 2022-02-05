@@ -158,6 +158,10 @@ export class VisController {
     // console.log("xAxisSeries :>> ", this.xAxisSeries);
     // console.log("xAxisTicks :>> ", this.xAxisTicks);
     // console.log("seriesRanges :>> ", this.seriesRanges);
+    console.log(
+      "seriesIndicesForEachMeasurement :>> ",
+      this.seriesIndicesForEachMeasurement
+    );
   }
 
   // Rendering
