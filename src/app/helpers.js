@@ -84,9 +84,9 @@ export class VisObject {
   }
 
   assignSeries() {
-    for (let i = 1; i < this.numberOfMeasurements; i++) {
+    for (let i = 0; i < this.numberOfMeasurements; i++) {
       this.rows.forEach((row) => {
-        const parsedValue = row[i].replace(/\s/, "");
+        const parsedValue = i == 0 ? row[i] : row[i].replace(/\s/, ""); // Strip spaces for non DateTime numeric values
 
         if (typeof this.series[i] == "undefined") {
           this.series[i] = [parsedValue];
@@ -97,7 +97,7 @@ export class VisObject {
     }
   }
 
-  stratifyByMeasurement() {
+  stratifySeriesIndicesByMeasurement() {
     this.constructor.UNITS_OF_MEASUREMENT.forEach((unit) => {
       this.seriesIndicesForEachMeasurement[unit] =
         this.constructor.getIndicesForMetric(unit, this.headings);
@@ -112,7 +112,7 @@ export class VisObject {
     console.log("object :>> ", Object.values(this.series));
   }
 
-  assignXAxisTicks() {
+  assignXAxisTickValues() {
     this.xScaleSeries = this.rows.map(selectDateTimeValue);
     this.xAxisTicks = transformDateArrayToDateTimeStringsArray(
       this.xScaleSeries
@@ -121,26 +121,26 @@ export class VisObject {
 
   // Dev helper
   logData() {
-    // this.headings.forEach((h, i) => {
-    //   console.log(
-    //     "this.headings :>> " + i + " ",
-    //     h,
-    //     " : ",
-    //     HEADINGS_INFO[h.split("[")[0]]
-    //   );
-    // });
-    // console.table(this.rows);
-    // console.log("xScaleSeries :>> ", this.xScaleSeries);
-    // console.log("xAxisTicks :>> ", this.xAxisTicks);
+    this.headings.forEach((h, i) => {
+      console.log(
+        "this.headings :>> " + i + " ",
+        h,
+        " : ",
+        HEADINGS_INFO[h.split("[")[0]]
+      );
+    });
+    console.table(this.rows);
+    console.log("xScaleSeries :>> ", this.xScaleSeries);
+    console.log("xAxisTicks :>> ", this.xAxisTicks);
     console.log("seriesRanges :>> ", this.seriesRanges);
   }
 
   transformData() {
     this.assignRows();
     this.assignSeries();
-    this.stratifyByMeasurement();
+    this.stratifySeriesIndicesByMeasurement();
     this.calculateAndAssignRanges();
-    this.assignXAxisTicks();
+    this.assignXAxisTickValues();
   }
 
   // Rendering
