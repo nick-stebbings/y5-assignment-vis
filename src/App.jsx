@@ -15,58 +15,49 @@ export const App = () => {
         const values = rows.slice(NUMBER_OF_MEASUREMENTS);
 
         const mainVis = new Vis(headings, values, NUMBER_OF_MEASUREMENTS);
-        mainVis.logData();
+        // mainVis.logData();
 
         const gridlines = fc.annotationSvgGridline();
 
-        const series = fc
+        const line = fc
           .seriesSvgLine()
-          .crossValue((d, i) => i)
-          .mainValue((d) => d.y)
-          // .baseValue((d) => d.y1)
-          .curve(d3.curveCatmullRom.alpha(0.5));
+          .crossValue((d, i) => {
+            return mainVis.xScaleSeries[i];
+          })
+          .mainValue((d, i) => {
+            return d;
+          });
 
         const annotations = fc
           .annotationSvgLine()
-          .value((d) => d.mph)
-          .label((d) => d.time);
+          .value((d) => d)
+          .label((d) => d);
 
-        // const multi = fc
-        //   .seriesSvgMulti()
-        //   .series(
-        //     [gridlines].concat(grouped.map(() => series).concat(annotation))
-        //   )
-        //   .mapping(
-        //     (data, index) =>
-        //       // the gridlines are not bound to data, so skip the first index
-        //       data[index - 1]
-        //   )
-        //   .decorate((sel) =>
-        //     // make the bands pretty!
-        //     sel.attr("fill", (d, i) => d3.interpolateSpectral(i / 12))
-        //   );
+        const multi = fc
+          .seriesSvgMulti()
+          .series([gridlines].concat(line).concat([annotations]))
+          .mapping((data, index) => {
+            // debugger;
+            // the gridlines are not bound to data, so skip the first index
+            console.log("data[index] :>> ", data);
+            return data;
+          });
 
         const swhValues = mainVis.getSeriesByIndex(2);
 
         let xScale = d3.scaleTime().nice();
-        const xScale2 = d3.scaleTime().domain(mainVis.getRangeByIndex(0));
-        const xAxis2TickValues = mainVis
-          .getSeriesByIndex(0)
-          .map(
-            (dateVal) =>
-              transformDateArrayToDateTimeStringsArray([new Date(dateVal)])[0]
-                .split` `[1]
-          );
+        const xScale2 = d3.scaleTime().domain(mainVis.getExtentByIndex(0));
 
         const chart = fc
           .chartCartesian(xScale, d3.scaleLinear())
-          .xDomain(mainVis.getRangeByIndex(0))
-          .yDomain(mainVis.getRangeByIndex(2))
+          .xDomain(mainVis.getExtentByIndex(0))
+          .yDomain(mainVis.getExtentByIndex(2))
           .yOrient("left")
           .yLabel("Height (m)")
           .xLabel("Date/Time")
           .chartLabel("MetOcean Data Series")
-          .svgPlotArea(series)
+          .svgPlotArea(multi)
+          .xTickSizeOuter(0)
           .decorate((selection) => {
             selection
               .enter()
@@ -88,13 +79,14 @@ export const App = () => {
                 const xAxis2 = fc
                   .axisBottom(xScale2)
                   .tickArguments([192 / 4])
+                  .tickFormat(d3.timeFormat("%H%M"))
                   .tickCenterLabel(true);
                 d3.select(event.currentTarget).select("svg").call(xAxis2);
               });
           });
 
         d3.select(vnode.dom)
-          .datum(swhValues.concat([annotations]))
+          .datum(swhValues) //.concat([annotations]))
           .call(chart);
       });
     },

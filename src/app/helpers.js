@@ -113,7 +113,7 @@ export class Vis {
             .accessors([(d) => new Date(d)])
             .padUnit("domain")
             .pad([20, 20])(seriesArr)
-        : fc.extentLinear(seriesArr)(seriesArr)
+        : fc.extentLinear(seriesArr).accessors([(d, i) => +d])(seriesArr)
     );
     console.log("object :>> ", Object.values(this.series));
   }
@@ -138,7 +138,7 @@ export class Vis {
   getSeriesByIndex(i) {
     return this.rows.map((row) => row[i]);
   }
-  getRangeByIndex(i) {
+  getExtentByIndex(i) {
     return this.seriesRanges[i];
   }
 

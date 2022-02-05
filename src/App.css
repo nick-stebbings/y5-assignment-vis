@@ -14,5 +14,6 @@ body,
 }
 
 #chart {
-  margin: 15% 15%;
+  height: 100vh;
+  margin: 15% 2%;
 }
