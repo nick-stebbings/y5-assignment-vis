@@ -4,141 +4,24 @@ import m from "mithril";
 import * as Stream from "mithril/stream";
 import "./App.css";
 
-import { NUMBER_OF_MEASUREMENTS, ARROW_SVG_PATH } from "./app/constants";
-import { VisController } from "./app/helpers";
+import { Chart } from "./components/Chart.jsx";
+import { HEADINGS_INFO } from "./app/constants";
 
 export const App = () => {
+  const seriesSelectedIndices = Stream([2]);
   return {
-    oncreate: (vnode) => {
-      d3.text("metocean.tsv").then((text) => {
-        const seriesSelectedIndices = Stream([2]);
-
-        const rows = d3.tsvParseRows(text, (d) => d)[0];
-        const headings = rows.slice(0, NUMBER_OF_MEASUREMENTS);
-        const values = rows.slice(NUMBER_OF_MEASUREMENTS);
-
-        const mainVis = new VisController(
-          headings,
-          values,
-          NUMBER_OF_MEASUREMENTS
-        );
-        // mainVis.logData();
-
-        const line = fc
-          .seriesSvgLine()
-          .crossValue((d, i) => {
-            return mainVis.xAxisSeries[i];
-          })
-          .mainValue((d, i) => {
-            return d;
-          });
-
-        const gridlines = fc.annotationSvgGridline();
-        const annotations = fc
-          .annotationSvgLine()
-          .value((d) => d)
-          .label((d) => d);
-
-        const multi = fc
-          .seriesSvgMulti()
-          .series([gridlines].concat(line).concat([annotations]))
-          .mapping((data, index) => {
-            return data;
-          });
-
-        let xScale = d3.scaleTime().nice();
-        const xScale2 = d3.scaleTime().domain(mainVis.getExtentByIndex(0));
-
-        const chart = fc
-          .chartCartesian(xScale, d3.scaleLinear())
-          .xDomain(mainVis.getExtentByIndex(0))
-          .yDomain(mainVis.getExtentByIndex(seriesSelectedIndices()))
-          .yOrient("left")
-          .yLabel("Height (m)")
-          .xLabel("Date/Time")
-          .chartLabel("MetOcean Data Series")
-          .svgPlotArea(multi)
-          .xTickSizeOuter(0)
-          .decorate((selection) => {
-            selection
-              .enter()
-              // additionally add a d3fc-svg element for the axis
-              .append("d3fc-svg")
-              // move the element into the right-axis cell
-              .style("grid-column", 3)
-              .style("grid-row", 5)
-              // and set the axis height
-              .style("height", "5rem")
-              // when there's a measure event (namespaced to avoid removing existing handlers)
-              .on("measure.x-axis", (event) => {
-                // set the range on the scale to the elements width
-                xScale2.range([0, event.detail.width]);
-              })
-              .on("draw.x-axis", (event, d) => {
-                // draw the axis into the svg within the d3fc-svg element
-
-                const xAxis2 = fc
-                  .axisBottom(xScale2)
-                  .tickArguments([192 / 4])
-                  .tickFormat(d3.timeFormat("%H%M"))
-                  .tickSizeOuter(0);
-                d3.select(event.currentTarget).select("svg").call(xAxis2);
-              });
-            selection
-              .enter()
-              // additionally add a d3fc-svg element for the axis
-              .append("d3fc-svg")
-              // move the element into the right-axis cell
-              .style("grid-column", 3)
-              .style("grid-row", 1)
-              // and set the axis height
-              .style("height", "5rem")
-              .classed("z-axis", true)
-              // when there's a measure event (namespaced to avoid removing existing handlers)
-              .on("measure.x-axis", (event) => {
-                // set the range on the scale to the elements width
-                xScale2.range([0, event.detail.width]);
-              })
-              .on("draw.x-axis", (event, d) => {
-                // draw the axis into the svg within the d3fc-svg element
-
-                const windIndicatorsAxis = fc
-                  .axisBottom(xScale2)
-                  .tickArguments([192 / 4])
-                  .tickFormat(d3.timeFormat("%H%M"))
-                  .tickSizeOuter(0)
-                  .decorate((sel) => {
-                    sel.selectAll(".tick path").each(appendWindIndicator);
-                  });
-                d3.select(event.currentTarget)
-                  .select("svg")
-                  .call(windIndicatorsAxis);
-              });
-          });
-
-        mainVis.render(vnode.dom, seriesSelectedIndices(), chart);
-
-        function appendWindIndicator(d, i, domNode) {
-          const seriesIndex = mainVis.xAxisSeries.findIndex(
-            (el) => el.valueOf() == d.valueOf()
-          );
-          const windDirectionDeg = mainVis.getSeriesByIndex(26)[seriesIndex];
-          const windStrength = mainVis.getSeriesByIndex(25)[seriesIndex];
-
-          d3.select(domNode[0])
-            .attr("d", ARROW_SVG_PATH)
-            .classed("wind-direction-arrow", true)
-            .attr(
-              "transform",
-              `scale(${(0.01 * windStrength) / 2}), rotate(${
-                windDirectionDeg - 180
-              })` // Adjust to point in the opposite direction (of 'from')
-            );
-        }
-      });
-    },
+    oninit: (vnode) => {},
     view: () => {
-      return <div id="chart"></div>;
+      return (
+        <div>
+          <div className="series-selector">
+            <select>
+              <option>h</option>
+            </select>
+          </div>
+          <Chart seriesSelectorStream={seriesSelectedIndices} />
+        </div>
+      );
     },
   };
 };
