@@ -26,9 +26,10 @@ export const App = () => {
               }}
             >
               {Object.values(HEADINGS_INFO)
-                .filter((heading, idx) =>
-                  METRE_MEASURED_SERIES_INDICES.includes(idx)
-                )
+                .filter((heading, idx) => {
+                  // console.log("heading, idx :>> ", heading, idx + 1);
+                  return METRE_MEASURED_SERIES_INDICES.includes(idx + 1);
+                })
                 .map((heading, idx) => (
                   <option>{heading}</option>
                 ))}
