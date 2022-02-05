@@ -154,10 +154,10 @@ export class Vis {
         HEADINGS_INFO[h.split("[")[0]]
       );
     });
-    console.table(this.rows);
-    console.log("xScaleSeries :>> ", this.xScaleSeries);
-    console.log("xAxisTicks :>> ", this.xAxisTicks);
-    console.log("seriesRanges :>> ", this.seriesRanges);
+    // console.table(this.rows);
+    // console.log("xScaleSeries :>> ", this.xScaleSeries);
+    // console.log("xAxisTicks :>> ", this.xAxisTicks);
+    // console.log("seriesRanges :>> ", this.seriesRanges);
   }
 
   // Rendering

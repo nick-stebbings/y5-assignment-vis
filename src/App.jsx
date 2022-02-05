@@ -3,7 +3,7 @@ import * as fc from "d3fc";
 import m from "mithril";
 import "./App.css";
 
-import { NUMBER_OF_MEASUREMENTS } from "./app/constants";
+import { NUMBER_OF_MEASUREMENTS, ARROW_SVG_PATH } from "./app/constants";
 import { Vis, transformDateArrayToDateTimeStringsArray } from "./app/helpers";
 
 export const App = () => {
@@ -15,7 +15,7 @@ export const App = () => {
         const values = rows.slice(NUMBER_OF_MEASUREMENTS);
 
         const mainVis = new Vis(headings, values, NUMBER_OF_MEASUREMENTS);
-        // mainVis.logData();
+        mainVis.logData();
 
         const line = fc
           .seriesSvgLine()
@@ -104,9 +104,23 @@ export const App = () => {
                   .tickSizeOuter(0)
                   .decorate((sel) => {
                     sel.selectAll(".tick path").each((d, i, domNode) => {
+                      const seriesIndex = mainVis.xScaleSeries.findIndex(
+                        (el) => el.valueOf() == d.valueOf()
+                      );
+                      const windDirectionDeg =
+                        mainVis.getSeriesByIndex(26)[seriesIndex];
+                      const windStrength =
+                        mainVis.getSeriesByIndex(25)[seriesIndex];
+
                       d3.select(domNode[0])
-                        .attr("d", "M8 7l4-4m0 0l4 4m-4-4v18")
-                        .attr("transform", `scale(${2}), rotate(${0})`);
+                        .attr("d", ARROW_SVG_PATH)
+                        .classed("wind-direction-arrow", true)
+                        .attr(
+                          "transform",
+                          `scale(${(0.01 * windStrength) / 2}), rotate(${
+                            windDirectionDeg - 180
+                          })` // Adjust to point in the opposite direction (of 'from')
+                        );
                     });
                   });
                 d3.select(event.currentTarget).select("svg").call(zAxis);
