@@ -5,12 +5,15 @@ import "./App.css";
 import { Chart } from "./components/Chart.jsx";
 import { HEADINGS_INFO, METRE_MEASURED_SERIES_INDICES } from "./app/constants";
 
+import { VisController } from "./app/helpers";
+
 export const App = () => {
   const seriesSelectedIndices = Stream([2]);
   const selectedIndex = Stream([0]);
 
+  const mainVis = new VisController();
   return {
-    view: () => {
+    view: (vnode) => {
       return (
         <div>
           <div className="series-selector">
@@ -26,6 +29,13 @@ export const App = () => {
                 seriesSelectedIndices([
                   METRE_MEASURED_SERIES_INDICES[selectedIndex()],
                 ]);
+
+                const chartDomNode = document.querySelector(".chart");
+                mainVis.render(
+                  chartDomNode,
+                  seriesSelectedIndices(),
+                  mainVis.chart
+                );
                 m.redraw();
               }}
             >
@@ -38,7 +48,10 @@ export const App = () => {
                 ))}
             </select>
           </div>
-          <Chart seriesSelectorStream={seriesSelectedIndices} />
+          <Chart
+            mainVis={mainVis}
+            seriesSelectorStream={seriesSelectedIndices}
+          />
         </div>
       );
     },

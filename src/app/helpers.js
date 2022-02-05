@@ -19,6 +19,8 @@ export function transformDateArrayToDateTimeStringsArray(datesArray) {
 }
 
 export class VisController {
+  constructor() {}
+
   static UNITS_OF_MEASUREMENT = ["m", "s", "deg", "kts", "mm/hr", "C", "%"];
 
   static getIndicesForMetric(metricSymbol, headings) {
@@ -54,7 +56,7 @@ export class VisController {
     }
   }
 
-  constructor(headings, values, numberOfMeasurements) {
+  init(headings, values, numberOfMeasurements) {
     this.headings = headings;
     this.values = values;
 
@@ -166,6 +168,7 @@ export class VisController {
 
   // Rendering
   render(vnode, seriesIndex, chart) {
+    console.log("vnode, seriesIndex, chart :>> ", vnode, seriesIndex, chart);
     d3.select(vnode)
       .datum(this.getSeriesByIndex(seriesIndex)) //.concat([annotations]))
       .call(chart);

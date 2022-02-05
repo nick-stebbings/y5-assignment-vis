@@ -4,21 +4,16 @@ import m from "mithril";
 import * as Stream from "mithril/stream";
 
 import { NUMBER_OF_MEASUREMENTS, ARROW_SVG_PATH } from "../app/constants";
-import { VisController } from "../app/helpers";
 
 export const Chart = () => {
   return {
-    oncreate: ({ dom, attrs: { seriesSelectorStream } }) => {
+    oncreate: ({ dom, attrs: { mainVis, seriesSelectorStream } }) => {
       d3.text("metocean.tsv").then((text) => {
         const rows = d3.tsvParseRows(text, (d) => d)[0];
         const headings = rows.slice(0, NUMBER_OF_MEASUREMENTS);
         const values = rows.slice(NUMBER_OF_MEASUREMENTS);
 
-        const mainVis = new VisController(
-          headings,
-          values,
-          NUMBER_OF_MEASUREMENTS
-        );
+        mainVis.init(headings, values, NUMBER_OF_MEASUREMENTS);
         mainVis.logData();
 
         const line = fc
@@ -46,7 +41,7 @@ export const Chart = () => {
         let xScale = d3.scaleTime().nice();
         const xScale2 = d3.scaleTime().domain(mainVis.getExtentByIndex(0));
 
-        const chart = fc
+        mainVis.chart = fc
           .chartCartesian(xScale, d3.scaleLinear())
           .xDomain(mainVis.getExtentByIndex(0))
           .yDomain(mainVis.getExtentByIndex(seriesSelectorStream()))
@@ -113,7 +108,7 @@ export const Chart = () => {
               });
           });
 
-        mainVis.render(dom, seriesSelectorStream(), chart);
+        mainVis.render(dom, seriesSelectorStream(), mainVis.chart);
 
         function appendWindIndicator(d, i, domNode) {
           const seriesIndex = mainVis.xAxisSeries.findIndex(
