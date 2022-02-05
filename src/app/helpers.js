@@ -113,9 +113,11 @@ export class Vis {
             .accessors([(d) => new Date(d)])
             .padUnit("domain")
             .pad([20, 20])(seriesArr)
-        : fc.extentLinear(seriesArr).accessors([(d, i) => +d])(seriesArr)
+        : fc
+            .extentLinear(seriesArr)
+            .include([0])
+            .accessors([(d, i) => +d])(seriesArr)
     );
-    console.log("object :>> ", Object.values(this.series));
   }
 
   _assignXAxisTickValues() {

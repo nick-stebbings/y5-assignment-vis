@@ -17,8 +17,6 @@ export const App = () => {
         const mainVis = new Vis(headings, values, NUMBER_OF_MEASUREMENTS);
         // mainVis.logData();
 
-        const gridlines = fc.annotationSvgGridline();
-
         const line = fc
           .seriesSvgLine()
           .crossValue((d, i) => {
@@ -28,6 +26,7 @@ export const App = () => {
             return d;
           });
 
+        const gridlines = fc.annotationSvgGridline();
         const annotations = fc
           .annotationSvgLine()
           .value((d) => d)
@@ -37,9 +36,6 @@ export const App = () => {
           .seriesSvgMulti()
           .series([gridlines].concat(line).concat([annotations]))
           .mapping((data, index) => {
-            // debugger;
-            // the gridlines are not bound to data, so skip the first index
-            console.log("data[index] :>> ", data);
             return data;
           });
 
@@ -67,7 +63,7 @@ export const App = () => {
               .style("grid-column", 3)
               .style("grid-row", 5)
               // and set the axis height
-              .style("height", "3em")
+              .style("height", "5rem")
               // when there's a measure event (namespaced to avoid removing existing handlers)
               .on("measure.x-axis", (event) => {
                 // set the range on the scale to the elements width
@@ -79,8 +75,7 @@ export const App = () => {
                 const xAxis2 = fc
                   .axisBottom(xScale2)
                   .tickArguments([192 / 4])
-                  .tickFormat(d3.timeFormat("%H%M"))
-                  .tickCenterLabel(true);
+                  .tickFormat(d3.timeFormat("%H%M"));
                 d3.select(event.currentTarget).select("svg").call(xAxis2);
               });
           });
