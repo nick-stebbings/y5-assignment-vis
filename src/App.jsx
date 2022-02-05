@@ -36,7 +36,6 @@ export const App = () => {
                   seriesSelectedIndices(),
                   mainVis.chart
                 );
-                m.redraw();
               }}
             >
               {Object.values(HEADINGS_INFO)
