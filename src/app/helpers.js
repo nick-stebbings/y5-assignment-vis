@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+import * as fc from "d3fc";
 import { HEADINGS_INFO } from "./constants";
 
 export function selectDateTimeValue(array) {
@@ -57,16 +59,18 @@ export class VisObject {
     this.values = values;
 
     this.numberOfMeasurements = numberOfMeasurements;
+    this.series = {};
     this.seriesIndicesForEachMeasurement = {};
 
     this.transformData();
   }
 
+  // Transformation helpers
   divideRows(divisionIndex) {
     return this.values.reduce((acc, el, idx) => {
-      if (idx % 40 === 0) {
+      if (idx % this.numberOfMeasurements === 0) {
         acc.push([]);
-        divisionIndex += 40;
+        divisionIndex += this.numberOfMeasurements;
       }
       if (idx < divisionIndex - 1) {
         acc.slice(-1)[0].push(el);
@@ -79,6 +83,20 @@ export class VisObject {
     this.rows = this.divideRows(this.numberOfMeasurements, this.values);
   }
 
+  assignSeries() {
+    for (let i = 1; i < this.numberOfMeasurements; i++) {
+      this.rows.forEach((row) => {
+        const parsedValue = row[i].replace(/\s/, "");
+
+        if (typeof this.series[i] == "undefined") {
+          this.series[i] = [parsedValue];
+        } else {
+          this.series[i].push(parsedValue);
+        }
+      });
+    }
+  }
+
   stratifyByMeasurement() {
     this.constructor.UNITS_OF_MEASUREMENT.forEach((unit) => {
       this.seriesIndicesForEachMeasurement[unit] =
@@ -86,21 +104,45 @@ export class VisObject {
     });
   }
 
-  logData() {
-    this.headings.forEach((h, i) => {
-      console.log(
-        "this.headings :>> " + i + " ",
-        h,
-        " : ",
-        HEADINGS_INFO[h.split("[")[0]]
-      );
-    });
+  // D3 chart prep helpers
+  calculateAndAssignRanges() {
+    this.seriesRanges = Object.values(this.series).map((seriesArr) =>
+      d3.extent(seriesArr)
+    );
+    console.log("object :>> ", Object.values(this.series));
+  }
 
-    console.table(this.rows);
+  assignXAxisTicks() {
+    this.xScaleSeries = this.rows.map(selectDateTimeValue);
+    this.xAxisTicks = transformDateArrayToDateTimeStringsArray(
+      this.xScaleSeries
+    );
+  }
+
+  // Dev helper
+  logData() {
+    // this.headings.forEach((h, i) => {
+    //   console.log(
+    //     "this.headings :>> " + i + " ",
+    //     h,
+    //     " : ",
+    //     HEADINGS_INFO[h.split("[")[0]]
+    //   );
+    // });
+    // console.table(this.rows);
+    // console.log("xScaleSeries :>> ", this.xScaleSeries);
+    // console.log("xAxisTicks :>> ", this.xAxisTicks);
+    console.log("seriesRanges :>> ", this.seriesRanges);
   }
 
   transformData() {
     this.assignRows();
+    this.assignSeries();
     this.stratifyByMeasurement();
+    this.calculateAndAssignRanges();
+    this.assignXAxisTicks();
   }
+
+  // Rendering
+  render() {}
 }

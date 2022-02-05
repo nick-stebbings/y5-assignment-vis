@@ -3,7 +3,7 @@ import * as fc from "d3fc";
 import m from "mithril";
 import "./App.css";
 
-import { HEADINGS_INFO, NUMBER_OF_MEASUREMENTS } from "./app/constants";
+import { NUMBER_OF_MEASUREMENTS } from "./app/constants";
 import {
   selectDateTimeValue,
   transformDateArrayToDateTimeStringsArray,
@@ -21,13 +21,6 @@ export const App = () => {
         const mainVis = new VisObject(headings, values, NUMBER_OF_MEASUREMENTS);
         mainVis.logData();
 
-        // console.log("separatedValues :>> ", separatedValues);
-
-        // const timeAxisSeries = valuesArrays.map(selectDateTimeValue);
-        // const xAxisTicks =
-        //   transformDateArrayToDateTimeStringsArray(timeAxisSeries);
-
-        // console.log("xAxisTicks :>> ", xAxisTicks);
         // // group into buckets
         // let grouped = d3
         //   .groups(splits, bucketByHour)
@@ -99,25 +92,25 @@ export const App = () => {
         //     sel.attr("fill", (d, i) => d3.interpolateSpectral(i / 12))
         //   );
 
-        const swhValues = valuesArrays.map((va) => va[2]);
+        // const swhValues = valuesArrays.map((va) => va[2]);
 
-        const chart = fc
-          .chartCartesian(d3.scaleTime(), d3.scaleLinear())
-          .xDomain([timeAxisSeries[0], timeAxisSeries.slice(-1)[0]])
-          .yDomain([
-            Math.min.apply(null, swhValues),
-            Math.max.apply(null, swhValues),
-          ])
-          .yOrient("left")
-          .yLabel("Height (m)")
-          .xLabel("Date/Time")
-          .chartLabel("MetOcean Data Series")
-          .svgPlotArea(series);
-        // debugger;
+        // const chart = fc
+        //   .chartCartesian(d3.scaleTime(), d3.scaleLinear())
+        //   .xDomain([timeAxisSeries[0], timeAxisSeries.slice(-1)[0]])
+        //   .yDomain([
+        //     Math.min.apply(null, swhValues),
+        //     Math.max.apply(null, swhValues),
+        //   ])
+        //   .yOrient("left")
+        //   .yLabel("Height (m)")
+        //   .xLabel("Date/Time")
+        //   .chartLabel("MetOcean Data Series")
+        //   .svgPlotArea(series);
+        // // debugger;
 
-        d3.select(vnode.dom)
-          .datum(swhValues.concat([annotations]))
-          .call(chart);
+        // d3.select(vnode.dom)
+        //   .datum(swhValues.concat([annotations]))
+        //   .call(chart);
       });
     },
     view: () => {
