@@ -4,7 +4,7 @@ import m from "mithril";
 import "./App.css";
 
 import { NUMBER_OF_MEASUREMENTS, ARROW_SVG_PATH } from "./app/constants";
-import { Vis, transformDateArrayToDateTimeStringsArray } from "./app/helpers";
+import { VisController } from "./app/helpers";
 
 export const App = () => {
   return {
@@ -14,13 +14,17 @@ export const App = () => {
         const headings = rows.slice(0, NUMBER_OF_MEASUREMENTS);
         const values = rows.slice(NUMBER_OF_MEASUREMENTS);
 
-        const mainVis = new Vis(headings, values, NUMBER_OF_MEASUREMENTS);
+        const mainVis = new VisController(
+          headings,
+          values,
+          NUMBER_OF_MEASUREMENTS
+        );
         mainVis.logData();
 
         const line = fc
           .seriesSvgLine()
           .crossValue((d, i) => {
-            return mainVis.xScaleSeries[i];
+            return mainVis.xAxisSeries[i];
           })
           .mainValue((d, i) => {
             return d;
@@ -97,14 +101,14 @@ export const App = () => {
               .on("draw.x-axis", (event, d) => {
                 // draw the axis into the svg within the d3fc-svg element
 
-                const zAxis = fc
+                const windInfoAxis = fc
                   .axisBottom(xScale2)
                   .tickArguments([192 / 4])
                   .tickFormat(d3.timeFormat("%H%M"))
                   .tickSizeOuter(0)
                   .decorate((sel) => {
                     sel.selectAll(".tick path").each((d, i, domNode) => {
-                      const seriesIndex = mainVis.xScaleSeries.findIndex(
+                      const seriesIndex = mainVis.xAxisSeries.findIndex(
                         (el) => el.valueOf() == d.valueOf()
                       );
                       const windDirectionDeg =
@@ -123,7 +127,7 @@ export const App = () => {
                         );
                     });
                   });
-                d3.select(event.currentTarget).select("svg").call(zAxis);
+                d3.select(event.currentTarget).select("svg").call(windInfoAxis);
               });
           });
 

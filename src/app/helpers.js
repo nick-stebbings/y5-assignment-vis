@@ -18,7 +18,7 @@ export function transformDateArrayToDateTimeStringsArray(datesArray) {
   });
 }
 
-export class Vis {
+export class VisController {
   static UNITS_OF_MEASUREMENT = ["m", "s", "deg", "kts", "mm/hr", "C", "%"];
 
   static getIndicesForMetric(metricSymbol, headings) {
@@ -121,9 +121,9 @@ export class Vis {
   }
 
   _assignXAxisTickValues() {
-    this.xScaleSeries = this.rows.map(selectDateTimeValue);
+    this.xAxisSeries = this.rows.map(selectDateTimeValue);
     this.xAxisTicks = transformDateArrayToDateTimeStringsArray(
-      this.xScaleSeries
+      this.xAxisSeries
     );
   }
 
@@ -155,7 +155,7 @@ export class Vis {
       );
     });
     // console.table(this.rows);
-    // console.log("xScaleSeries :>> ", this.xScaleSeries);
+    // console.log("xAxisSeries :>> ", this.xAxisSeries);
     // console.log("xAxisTicks :>> ", this.xAxisTicks);
     // console.log("seriesRanges :>> ", this.seriesRanges);
   }
