@@ -10,7 +10,6 @@ export const App = () => {
   const selectedIndex = Stream([0]);
 
   return {
-    oninit: (vnode) => {},
     view: () => {
       return (
         <div>
@@ -23,11 +22,15 @@ export const App = () => {
               }
               onchange={(e) => {
                 selectedIndex(e.target.selectedIndex);
+
+                seriesSelectedIndices([
+                  METRE_MEASURED_SERIES_INDICES[selectedIndex()],
+                ]);
+                m.redraw();
               }}
             >
               {Object.values(HEADINGS_INFO)
-                .filter((heading, idx) => {
-                  // console.log("heading, idx :>> ", heading, idx + 1);
+                .filter((_, idx) => {
                   return METRE_MEASURED_SERIES_INDICES.includes(idx + 1);
                 })
                 .map((heading, idx) => (

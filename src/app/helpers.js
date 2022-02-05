@@ -115,7 +115,7 @@ export class VisController {
             .pad([20, 20])(seriesArr)
         : fc
             .extentLinear(seriesArr)
-            .include([0])
+            // .include([0])
             .accessors([(d, i) => +d])(seriesArr)
     );
   }
