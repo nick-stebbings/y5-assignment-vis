@@ -20,6 +20,7 @@ export const App = () => {
 
         const mainVis = new VisObject(headings, values, NUMBER_OF_MEASUREMENTS);
         mainVis.logData();
+        debugger;
 
         // // group into buckets
         // let grouped = d3

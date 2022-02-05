@@ -62,11 +62,11 @@ export class VisObject {
     this.series = {};
     this.seriesIndicesForEachMeasurement = {};
 
-    this.transformData();
+    this._transformData();
   }
 
   // Transformation helpers
-  divideRows(divisionIndex) {
+  _divideRows(divisionIndex) {
     return this.values.reduce((acc, el, idx) => {
       if (idx % this.numberOfMeasurements === 0) {
         acc.push([]);
@@ -79,11 +79,11 @@ export class VisObject {
     }, []);
   }
 
-  assignRows() {
-    this.rows = this.divideRows(this.numberOfMeasurements, this.values);
+  _assignRows() {
+    this.rows = this._divideRows(this.numberOfMeasurements, this.values);
   }
 
-  assignSeries() {
+  _assignSeries() {
     for (let i = 0; i < this.numberOfMeasurements; i++) {
       this.rows.forEach((row) => {
         const parsedValue = i == 0 ? row[i] : row[i].replace(/\s/, ""); // Strip spaces for non DateTime numeric values
@@ -97,7 +97,7 @@ export class VisObject {
     }
   }
 
-  stratifySeriesIndicesByMeasurement() {
+  _stratifySeriesIndicesByMeasurement() {
     this.constructor.UNITS_OF_MEASUREMENT.forEach((unit) => {
       this.seriesIndicesForEachMeasurement[unit] =
         this.constructor.getIndicesForMetric(unit, this.headings);
@@ -105,18 +105,34 @@ export class VisObject {
   }
 
   // D3 chart prep helpers
-  calculateAndAssignRanges() {
+  _calculateAndAssignRanges() {
     this.seriesRanges = Object.values(this.series).map((seriesArr) =>
       d3.extent(seriesArr)
     );
     console.log("object :>> ", Object.values(this.series));
   }
 
-  assignXAxisTickValues() {
+  _assignXAxisTickValues() {
     this.xScaleSeries = this.rows.map(selectDateTimeValue);
     this.xAxisTicks = transformDateArrayToDateTimeStringsArray(
       this.xScaleSeries
     );
+  }
+
+  _transformData() {
+    this._assignRows();
+    this._assignSeries();
+    this._stratifySeriesIndicesByMeasurement();
+    this._calculateAndAssignRanges();
+    this._assignXAxisTickValues();
+  }
+
+  //-- PUBLIC METHODS
+  getSeriesByIndex(i) {
+    return this.rows.map((row) => row[i]);
+  }
+  getRangeByIndex(i) {
+    return this.seriesRanges[i];
   }
 
   // Dev helper
@@ -133,14 +149,6 @@ export class VisObject {
     console.log("xScaleSeries :>> ", this.xScaleSeries);
     console.log("xAxisTicks :>> ", this.xAxisTicks);
     console.log("seriesRanges :>> ", this.seriesRanges);
-  }
-
-  transformData() {
-    this.assignRows();
-    this.assignSeries();
-    this.stratifySeriesIndicesByMeasurement();
-    this.calculateAndAssignRanges();
-    this.assignXAxisTickValues();
   }
 
   // Rendering
