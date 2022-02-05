@@ -31,6 +31,10 @@ export const App = () => {
                 ]);
 
                 const chartDomNode = document.querySelector(".chart");
+                mainVis.chart.yDomain(
+                  mainVis.getExtentByIndex(selectedIndex())
+                );
+
                 mainVis.render(
                   chartDomNode,
                   seriesSelectedIndices(),
@@ -40,7 +44,7 @@ export const App = () => {
             >
               {Object.values(HEADINGS_INFO)
                 .filter((_, idx) => {
-                  return METRE_MEASURED_SERIES_INDICES.includes(idx + 1);
+                  return METRE_MEASURED_SERIES_INDICES.includes(idx);
                 })
                 .map((heading, idx) => (
                   <option>{heading}</option>

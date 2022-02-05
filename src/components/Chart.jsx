@@ -16,6 +16,8 @@ export const Chart = () => {
         mainVis.init(headings, values, NUMBER_OF_MEASUREMENTS);
         mainVis.logData();
 
+        const timeSeries = mainVis.getExtentByIndex(0);
+
         const line = fc
           .seriesSvgLine()
           .crossValue((d, i) => {
@@ -39,11 +41,11 @@ export const Chart = () => {
           });
 
         let xScale = d3.scaleTime().nice();
-        const xScale2 = d3.scaleTime().domain(mainVis.getExtentByIndex(0));
+        const xScale2 = d3.scaleTime().domain(timeSeries);
 
         mainVis.chart = fc
           .chartCartesian(xScale, d3.scaleLinear())
-          .xDomain(mainVis.getExtentByIndex(0))
+          .xDomain(timeSeries)
           .yDomain(mainVis.getExtentByIndex(seriesSelectorStream()))
           .yOrient("left")
           .yLabel("Height (m)")

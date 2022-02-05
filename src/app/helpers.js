@@ -156,19 +156,24 @@ export class VisController {
         HEADINGS_INFO[h.split("[")[0]]
       );
     });
-    // console.table(this.rows);
-    // console.log("xAxisSeries :>> ", this.xAxisSeries);
-    // console.log("xAxisTicks :>> ", this.xAxisTicks);
-    // console.log("seriesRanges :>> ", this.seriesRanges);
-    console.log(
-      "seriesIndicesForEachMeasurement :>> ",
-      this.seriesIndicesForEachMeasurement
-    );
+    console.table(this.rows);
+    // // console.log("xAxisSeries :>> ", this.xAxisSeries);
+    // // console.log("xAxisTicks :>> ", this.xAxisTicks);
+    // // console.log("seriesRanges :>> ", this.seriesRanges);
+    // console.log(
+    //   "seriesIndicesForEachMeasurement :>> ",
+    //   this.seriesIndicesForEachMeasurement
+    // );
   }
 
   // Rendering
   render(vnode, seriesIndex, chart) {
     console.log("vnode, seriesIndex, chart :>> ", vnode, seriesIndex, chart);
+    console.log(
+      "this.getSeriesByIndex(seriesIndex) :>> ",
+      this.getSeriesByIndex(seriesIndex)
+    );
+
     d3.select(vnode)
       .datum(this.getSeriesByIndex(seriesIndex)) //.concat([annotations]))
       .call(chart);
