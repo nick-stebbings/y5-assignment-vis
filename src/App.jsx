@@ -1,26 +1,35 @@
-import * as d3 from "d3";
-import * as fc from "d3fc";
 import m from "mithril";
 import * as Stream from "mithril/stream";
 import "./App.css";
 
 import { Chart } from "./components/Chart.jsx";
-import { HEADINGS_INFO } from "./app/constants";
+import { HEADINGS_INFO, METRE_MEASURED_SERIES_INDICES } from "./app/constants";
 
 export const App = () => {
-  const seriesSelectedIndices = Stream([3]);
+  const seriesSelectedIndices = Stream([2]);
+  const selectedIndex = Stream([0]);
+
   return {
     oninit: (vnode) => {},
     view: () => {
       return (
         <div>
           <div className="series-selector">
-            <select>
+            <select
+              value={
+                Object.values(HEADINGS_INFO)[
+                  METRE_MEASURED_SERIES_INDICES[selectedIndex()]
+                ]
+              }
+              onchange={(e) => {
+                selectedIndex(e.target.selectedIndex);
+              }}
+            >
               {Object.values(HEADINGS_INFO)
                 .filter((heading, idx) =>
-                  [2, 3, 9, 10, 15, 16, 22, 23, 35, 38].includes(idx)
+                  METRE_MEASURED_SERIES_INDICES.includes(idx)
                 )
-                .map((heading) => (
+                .map((heading, idx) => (
                   <option>{heading}</option>
                 ))}
             </select>

@@ -43,4 +43,8 @@ export const HEADINGS_INFO = {
   sst: "Sea surface temperature",
 };
 
+export const METRE_MEASURED_SERIES_INDICES = [
+  2, 3, 9, 10, 15, 16, 22, 23, 35, 38,
+];
+
 export const NUMBER_OF_MEASUREMENTS = 40;
