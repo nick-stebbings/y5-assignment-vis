@@ -47,3 +47,8 @@ body,
   position: fixed;
   left: 48%;
 }
+
+.z-axis .domain,
+.z-axis text {
+  display: none;
+}

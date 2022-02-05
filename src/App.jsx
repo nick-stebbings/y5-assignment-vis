@@ -75,8 +75,41 @@ export const App = () => {
                 const xAxis2 = fc
                   .axisBottom(xScale2)
                   .tickArguments([192 / 4])
-                  .tickFormat(d3.timeFormat("%H%M"));
+                  .tickFormat(d3.timeFormat("%H%M"))
+                  .tickSizeOuter(0);
                 d3.select(event.currentTarget).select("svg").call(xAxis2);
+              });
+            selection
+              .enter()
+              // additionally add a d3fc-svg element for the axis
+              .append("d3fc-svg")
+              // move the element into the right-axis cell
+              .style("grid-column", 3)
+              .style("grid-row", 1)
+              // and set the axis height
+              .style("height", "5rem")
+              .classed("z-axis", true)
+              // when there's a measure event (namespaced to avoid removing existing handlers)
+              .on("measure.x-axis", (event) => {
+                // set the range on the scale to the elements width
+                xScale2.range([0, event.detail.width]);
+              })
+              .on("draw.x-axis", (event, d) => {
+                // draw the axis into the svg within the d3fc-svg element
+
+                const zAxis = fc
+                  .axisBottom(xScale2)
+                  .tickArguments([192 / 4])
+                  .tickFormat(d3.timeFormat("%H%M"))
+                  .tickSizeOuter(0)
+                  .decorate((sel) => {
+                    sel.selectAll(".tick path").each((d, i, domNode) => {
+                      d3.select(domNode[0])
+                        .attr("d", "M8 7l4-4m0 0l4 4m-4-4v18")
+                        .attr("transform", `scale(${2}), rotate(${0})`);
+                    });
+                  });
+                d3.select(event.currentTarget).select("svg").call(zAxis);
               });
           });
 
