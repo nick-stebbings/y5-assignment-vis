@@ -25,6 +25,7 @@ export class VisController {
     this.crosshair = [];
   }
 
+  static TOOLTIP_SERIES_INDICES = [0, 1, 39];
   static UNITS_OF_MEASUREMENT = ["m", "s", "deg", "kts", "mm/hr", "C", "%"];
 
   static getIndicesForMetric(metricSymbol, headings) {
@@ -142,6 +143,13 @@ export class VisController {
     activeGridlineClassList.add("visible");
   }
 
+  _updateTooltip(row) {
+    const tooltipValues = row.filter((_, idx) =>
+      this.constructor.TOOLTIP_SERIES_INDICES.includes(idx)
+    );
+    console.log("tooltipValues :>> ", tooltipValues);
+  }
+
   _bindPointer() {
     let currentIndexOnXAxis = 0;
     this.pointer = fc.pointer().on(
@@ -157,9 +165,11 @@ export class VisController {
             this.chart.xInvert(xVal)
           );
           if (currentIndexOnXAxis !== closestIndex) {
-            currentIndexOnXAxis = Math.floor(closestIndex);
-            console.log("currentIndexOnXAxis :>> ", currentIndexOnXAxis);
+            currentIndexOnXAxis = closestIndex;
+
             this._assignVisibleClassToGridline(currentIndexOnXAxis);
+
+            this._updateTooltip(this.rows[currentIndexOnXAxis]);
           }
 
           return this.xAxisSeries[closestIndex - 1];

@@ -47,7 +47,7 @@ body,
   position: relative;
 }
 
-.x-annotations::after {
+.x-annotations.visible::after {
   content: "";
   background-color: red;
   position: absolute;
