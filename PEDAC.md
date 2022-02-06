@@ -32,12 +32,12 @@
 // -- \\ Otherwise the division of 1 hour will have to be multiplied by 2 until we have a less crowded and more readable set of datapoints on the time axis.
 
 // Interactions:
-// -- Use an input selector to determine which series are plotted on the main chart.
+// -- \\Use an input selector to determine which series are plotted on the main chart.
 // - \\ Create controlled component for feeding the series index to the Vis Controller;
 // - \\ Re-render the vis with the input selector index from the view
 // \\ translate to overall series index.
 // Call re-render on the main vis controller instance with the given index.
-// - Allow hovering over the wind indicators to show a tooltip and gridline.
-// - Determine relevant pieces of data to show on the tooltip
-// - Create a hidden div that is populated with the datapoints at that index of the series at a specific wind indicator.
-// - Style the box and wind indicator (onhover)
+// - \\Allow hovering over the wind indicators to show a tooltip and gridline.
+// - \\Determine relevant pieces of data to show on the tooltip
+// - \\Create a hidden div that is populated with the datapoints at that index of the series at a specific wind indicator.
+// - \\Style the box and wind indicator

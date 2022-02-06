@@ -3,11 +3,7 @@ import * as Stream from "mithril/stream";
 import "./App.css";
 
 import { Chart } from "./components/Chart.jsx";
-import {
-  HEADINGS_INFO,
-  METRE_MEASURED_SERIES_INDICES,
-  EXCLUDED_METRE_SERIES,
-} from "./app/constants";
+import { HEADINGS_INFO, METRE_MEASURED_SERIES_INDICES } from "./app/constants";
 
 import { VisController } from "./app/helpers";
 
@@ -51,12 +47,9 @@ export const App = () => {
                 }}
               >
                 {Object.values(HEADINGS_INFO)
-                  .filter((_, idx) => {
-                    return (
-                      !EXCLUDED_METRE_SERIES.includes(idx) &&
-                      METRE_MEASURED_SERIES_INDICES.includes(idx)
-                    );
-                  })
+                  .filter((_, idx) =>
+                    METRE_MEASURED_SERIES_INDICES.includes(idx)
+                  )
                   .map((heading, idx) => (
                     <option>{heading}</option>
                   ))}
@@ -65,13 +58,12 @@ export const App = () => {
           </div>
           <div className="chart-subtitle">
             <ul>
-              <li>Not all series included</li>
               <li>
                 <a href="./metocean.tsv" target="_blank">
                   Source Data
                 </a>
               </li>
-              <li>Scroll to the right to continue</li>
+              <li>Scroll to the right for the full time series</li>
             </ul>
           </div>
           <Chart mainVis={mainVis} seriesSelectorStream={seriesSelectedIndex} />

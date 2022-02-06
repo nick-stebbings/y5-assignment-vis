@@ -18,6 +18,9 @@ export function transformDateArrayToDateTimeStringsArray(datesArray) {
   });
 }
 
+function overallHeadingIdx(heading) {
+  return Object.values(HEADINGS_INFO).indexOf(heading);
+}
 export class VisController {
   constructor() {
     this.series = {};
@@ -25,7 +28,9 @@ export class VisController {
     this.crosshair = [];
   }
 
-  static TOOLTIP_SERIES_INDICES = [0, 1, 39];
+  // Determines selection of series for Tooltip
+  static TOOLTIP_SERIES_INDICES = [0, 24, 25, 26, 12];
+
   static UNITS_OF_MEASUREMENT = ["m", "s", "deg", "kts", "mm/hr", "C", "%"];
 
   static filterByTooltipIndices = (_, idx) =>
@@ -148,7 +153,8 @@ export class VisController {
 
   _assignTooltipValues(row) {
     this.tooltipValues = row.filter(this.constructor.filterByTooltipIndices);
-    this.tooltipHeadings = ["date"]
+
+    this.tooltipHeadings = ["Time"]
       .concat(Object.values(HEADINGS_INFO))
       .filter(this.constructor.filterByTooltipIndices);
   }
@@ -167,6 +173,17 @@ export class VisController {
     this.tooltipValues.forEach(addListItem);
 
     tooltipHtml += `</ul>`;
+
+    tooltipHtml += `</ul><ul>`;
+
+    this.tooltipHeadings.forEach((h, idx) => {
+      addListItem(
+        this.headings[idx == 0 ? 0 : overallHeadingIdx(h) + 1]
+          .split(/[\[\]]/)
+          .slice(-2)[0],
+        idx
+      );
+    });
 
     selectedTooltip.innerHTML = tooltipHtml;
 

@@ -133,10 +133,12 @@ body,
   background-color: gainsboro;
   opacity: 0.8;
   top: 3.5rem;
-  width: 18em;
+  width: 28rem;
   height: 7rem;
   position: absolute;
   font-size: 0.9rem;
+  justify-content: center;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 [class^="tooltip_"] ul:first-of-type {
@@ -144,11 +146,30 @@ body,
   text-transform: uppercase;
 }
 
+[class^="tooltip_"] ul:first-of-type {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+[class^="tooltip_"] ul:nth-of-type(2) li {
+  text-align: right;
+}
+
+[class^="tooltip_"] ul:last-of-type {
+  flex-basis: 1rem;
+}
+
+[class^="tooltip_"] ul li {
+  height: 1.8rem;
+}
+
 [class^="tooltip_"] ul {
   padding: 0 1rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   list-style: none;
+  justify-content: center;
 }
 
 /* Series Selector */
