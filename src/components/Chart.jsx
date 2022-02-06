@@ -14,7 +14,7 @@ export const Chart = () => {
         const values = rows.slice(NUMBER_OF_MEASUREMENTS);
 
         mainVis.init(headings, values, NUMBER_OF_MEASUREMENTS);
-        mainVis.logData();
+        // mainVis.logData();
 
         const timeSeries = mainVis.getExtentByIndex(0);
 

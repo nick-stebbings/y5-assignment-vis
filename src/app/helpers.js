@@ -117,8 +117,9 @@ export class VisController {
             .pad([20, 20])(seriesArr)
         : fc
             .extentLinear(seriesArr)
-            // .include([0])
-            .accessors([(d, i) => +d])(seriesArr)
+            .include([0])
+            .accessors([(d, i) => +d])
+            .pad([0, 0.1])(seriesArr)
     );
   }
 
@@ -168,11 +169,11 @@ export class VisController {
 
   // Rendering
   render(vnode, seriesIndex, chart) {
-    console.log("vnode, seriesIndex, chart :>> ", vnode, seriesIndex, chart);
-    console.log(
-      "this.getSeriesByIndex(seriesIndex) :>> ",
-      this.getSeriesByIndex(seriesIndex)
-    );
+    // console.log("vnode, seriesIndex, chart :>> ", vnode, seriesIndex, chart);
+    // console.log(
+    //   "this.getSeriesByIndex(seriesIndex) :>> ",
+    //   this.getSeriesByIndex(seriesIndex)
+    // );
 
     d3.select(vnode)
       .datum(this.getSeriesByIndex(seriesIndex)) //.concat([annotations]))
