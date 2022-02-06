@@ -125,12 +125,30 @@ body,
   transform: scale(0.8);
 }
 
+[class^="tooltip_"].visible {
+  display: flex;
+}
+
 [class^="tooltip_"] {
-  background-color: blue;
+  background-color: gainsboro;
+  opacity: 0.8;
   top: 3.5rem;
-  width: 5rem;
-  height: 5rem;
+  width: 18em;
+  height: 7rem;
   position: absolute;
+  font-size: 0.9rem;
+}
+
+[class^="tooltip_"] ul:first-of-type {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+[class^="tooltip_"] ul {
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
 }
 
 /* Series Selector */

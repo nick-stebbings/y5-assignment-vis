@@ -153,12 +153,29 @@ export class VisController {
       .filter(this.constructor.filterByTooltipIndices);
   }
 
-  _updateTooltipData() {
-    this.tooltipValues.forEach((val) => {
-      // document
-      //   .querySelector(".visible.tooltip")
-      //   .appendChild(document.createTextNode(val));
-    });
+  _updateTooltipData(tooltipIdx) {
+    const selectedTooltip = document.querySelector(
+      ".hidden.tooltip_" + tooltipIdx
+    );
+    selectedTooltip?.classList.add("visible");
+
+    let tooltipHtml = `
+        <ul>`;
+    this.tooltipHeadings.forEach(addListItem);
+
+    tooltipHtml += `</ul><ul>`;
+    this.tooltipValues.forEach(addListItem);
+
+    tooltipHtml += `</ul>`;
+
+    selectedTooltip.innerHTML = tooltipHtml;
+
+    function addListItem(val, idx) {
+      if (val.match(/^201/) && idx == 0) {
+        val = val.split(" ")[1];
+      }
+      tooltipHtml += `<li>${val}</li>`;
+    }
   }
 
   _bindPointer() {
@@ -181,7 +198,7 @@ export class VisController {
             this._assignVisibleClassToGridline(currentIndexOnXAxis);
 
             this._assignTooltipValues(this.rows[currentIndexOnXAxis]);
-            this._updateTooltipData();
+            this._updateTooltipData(Math.floor(currentIndexOnXAxis / 3));
           }
 
           return this.xAxisSeries[closestIndex - 1];

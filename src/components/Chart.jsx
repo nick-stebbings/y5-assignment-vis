@@ -120,6 +120,7 @@ export const Chart = () => {
                   .tickSizeOuter(0)
                   .decorate((sel, collection, a) => {
                     sel.selectAll(".tick path").each(appendWindIndicator);
+
                     sel._groups[0].forEach(appendTooltipBox);
                   });
                 d3.select(event.currentTarget)
