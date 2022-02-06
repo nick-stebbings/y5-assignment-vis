@@ -46,7 +46,8 @@ export const App = () => {
                   mainVis.render(
                     chartDomNode,
                     +seriesSelectedIndex(),
-                    mainVis.chart
+                    mainVis.chart,
+                    mainVis.pointer
                   );
                 }}
               >

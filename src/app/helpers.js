@@ -169,15 +169,17 @@ export class VisController {
   }
 
   // Rendering
-  render(vnode, seriesIndex, chart) {
+  render(vnode, seriesIndex, chart, pointer) {
     // console.log("vnode, seriesIndex, chart :>> ", vnode, seriesIndex, chart);
     // console.log(
     //   "this.getSeriesByIndex(seriesIndex) :>> ",
     //   this.getSeriesByIndex(seriesIndex)
     // );
+    // console.log("this.crosshair :>> ", this.crosshair);
 
     d3.select(vnode)
       .datum(this.getSeriesByIndex(seriesIndex)) //.concat([annotations]))
       .call(chart);
+    d3.select(".plot-area").call(pointer);
   }
 }

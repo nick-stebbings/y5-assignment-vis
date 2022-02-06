@@ -31,6 +31,7 @@ export const Chart = () => {
           .seriesSvgPoint()
           .crossValue(xAccessor)
           .mainValue(yAccessor)
+          .size(25)
           .decorate((selection) => {
             selection.enter().append("text");
             selection.select("text").text(yAccessor);
@@ -43,22 +44,17 @@ export const Chart = () => {
           .label((d, i) => i);
         const pointer = fc.pointer().on("point", (event) => {
           mainVis.crosshair = event.map(({ x: xVal }) => {
-            const bisectDate = d3.bisector(function (d, i) {
-              return d;
+            const bisectDate = d3.bisector(function (a, b) {
+              return a - b;
             }).left;
 
             const closestIndex = bisectDate(
               mainVis.xAxisSeries,
               mainVis.chart.xInvert(xVal)
             );
-            console.log("closestIndex :>> ", closestIndex);
-            console.log(
-              "closestIndex :>> ",
-              mainVis.xAxisSeries[closestIndex - 1]
-            );
-            debugger;
             return mainVis.xAxisSeries[closestIndex - 1];
           });
+          mainVis.render(dom, seriesSelectorStream(), mainVis.chart, pointer);
         });
 
         const multi = fc
@@ -144,7 +140,7 @@ export const Chart = () => {
           });
 
         d3.select(".plot-area").call(pointer);
-        mainVis.render(dom, seriesSelectorStream(), mainVis.chart);
+        mainVis.render(dom, seriesSelectorStream(), mainVis.chart, pointer);
 
         function appendWindIndicator(d, i, domNode) {
           const seriesIndex = mainVis.xAxisSeries.findIndex(
