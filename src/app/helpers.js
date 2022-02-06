@@ -28,6 +28,9 @@ export class VisController {
   static TOOLTIP_SERIES_INDICES = [0, 1, 39];
   static UNITS_OF_MEASUREMENT = ["m", "s", "deg", "kts", "mm/hr", "C", "%"];
 
+  static filterByTooltipIndices = (_, idx) =>
+    VisController.TOOLTIP_SERIES_INDICES.includes(idx);
+
   static getIndicesForMetric(metricSymbol, headings) {
     switch (metricSymbol) {
       case "m":
@@ -143,11 +146,19 @@ export class VisController {
     activeGridlineClassList.add("visible");
   }
 
-  _updateTooltip(row) {
-    const tooltipValues = row.filter((_, idx) =>
-      this.constructor.TOOLTIP_SERIES_INDICES.includes(idx)
-    );
-    console.log("tooltipValues :>> ", tooltipValues);
+  _assignTooltipValues(row) {
+    this.tooltipValues = row.filter(this.constructor.filterByTooltipIndices);
+    this.tooltipHeadings = ["date"]
+      .concat(Object.values(HEADINGS_INFO))
+      .filter(this.constructor.filterByTooltipIndices);
+  }
+
+  _updateTooltipData() {
+    this.tooltipValues.forEach((val) => {
+      // document
+      //   .querySelector(".visible.tooltip")
+      //   .appendChild(document.createTextNode(val));
+    });
   }
 
   _bindPointer() {
@@ -169,7 +180,8 @@ export class VisController {
 
             this._assignVisibleClassToGridline(currentIndexOnXAxis);
 
-            this._updateTooltip(this.rows[currentIndexOnXAxis]);
+            this._assignTooltipValues(this.rows[currentIndexOnXAxis]);
+            this._updateTooltipData();
           }
 
           return this.xAxisSeries[closestIndex - 1];

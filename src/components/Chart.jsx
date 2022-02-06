@@ -70,7 +70,7 @@ export const Chart = () => {
           .chartLabel("MetOcean Data Series")
           .svgPlotArea(multi)
           .xTickSizeOuter(0)
-          .decorate((selection) => {
+          .decorate((selection, idx) => {
             selection
               .enter()
               // additionally add a d3fc-svg element for the axis
@@ -118,8 +118,9 @@ export const Chart = () => {
                   .tickArguments([192 / 4])
                   .tickFormat(d3.timeFormat("%H%M"))
                   .tickSizeOuter(0)
-                  .decorate((sel) => {
+                  .decorate((sel, collection, a) => {
                     sel.selectAll(".tick path").each(appendWindIndicator);
+                    sel._groups[0].forEach(appendTooltipBox);
                   });
                 d3.select(event.currentTarget)
                   .select("svg")
@@ -129,7 +130,17 @@ export const Chart = () => {
 
         mainVis.render(dom, seriesSelectorStream(), mainVis.chart);
 
-        function appendWindIndicator(d, i, domNode) {
+        function appendTooltipBox(domNode, idx) {
+          const tickSelection = d3.select(domNode);
+          const xCoord = tickSelection.attr("transform").split(/[\(\.]/)[1];
+
+          d3.select(".chart")
+            .append("div")
+            .classed("tooltip_" + idx, true)
+            .classed("hidden", true)
+            .style("left", `calc(2.5rem + ${xCoord}px)`);
+        }
+        function appendWindIndicator(d, _, domNode) {
           const seriesIndex = mainVis.xAxisSeries.findIndex(
             (el) => el.valueOf() == d.valueOf()
           );

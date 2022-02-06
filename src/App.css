@@ -47,12 +47,8 @@ body,
   position: relative;
 }
 
-.x-annotations.visible::after {
-  content: "";
+.tooltip {
   background-color: red;
-  position: absolute;
-  left: 2rem;
-  top: 2rem;
   width: 12rem;
   height: 12rem;
 }
@@ -127,6 +123,14 @@ body,
   top: 0.25rem;
   content: url("../public/images/compass.png");
   transform: scale(0.8);
+}
+
+[class^="tooltip_"] {
+  background-color: blue;
+  top: 3.5rem;
+  width: 5rem;
+  height: 5rem;
+  position: absolute;
 }
 
 /* Series Selector */
