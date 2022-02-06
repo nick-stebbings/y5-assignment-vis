@@ -19,7 +19,11 @@ export function transformDateArrayToDateTimeStringsArray(datesArray) {
 }
 
 export class VisController {
-  constructor() {}
+  constructor() {
+    this.series = {};
+    this.seriesIndicesForEachMeasurement = {};
+    this.crosshair = [];
+  }
 
   static UNITS_OF_MEASUREMENT = ["m", "s", "deg", "kts", "mm/hr", "C", "%"];
 
@@ -54,17 +58,6 @@ export class VisController {
           .map((v, i) => (v.match(/.*(\[C\])$/) ? i : ""))
           .filter((v) => !!v);
     }
-  }
-
-  init(headings, values, numberOfMeasurements) {
-    this.headings = headings;
-    this.values = values;
-
-    this.numberOfMeasurements = numberOfMeasurements;
-    this.series = {};
-    this.seriesIndicesForEachMeasurement = {};
-
-    this._transformData();
   }
 
   // Transformation helpers
@@ -165,6 +158,14 @@ export class VisController {
     //   "seriesIndicesForEachMeasurement :>> ",
     //   this.seriesIndicesForEachMeasurement
     // );
+  }
+
+  init(headings, values, numberOfMeasurements) {
+    this.headings = headings;
+    this.values = values;
+    this.numberOfMeasurements = numberOfMeasurements;
+
+    this._transformData();
   }
 
   // Rendering

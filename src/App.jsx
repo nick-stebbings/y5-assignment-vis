@@ -63,6 +63,17 @@ export const App = () => {
               </select>
             </label>
           </div>
+          <div className="chart-subtitle">
+            <ul>
+              <li>Not all series included</li>
+              <li>
+                <a href="./metocean.tsv" target="_blank">
+                  Source Data
+                </a>
+              </li>
+              <li>Scroll to the right to continue</li>
+            </ul>
+          </div>
           <Chart mainVis={mainVis} seriesSelectorStream={seriesSelectedIndex} />
         </div>
       );

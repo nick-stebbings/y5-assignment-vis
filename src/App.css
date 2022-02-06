@@ -10,29 +10,29 @@ html,
 body,
 #app {
   height: 100%;
-  width: 300vw;
+  width: 200vw;
   overflow-y: hidden;
 }
 
 /* Chart */
 .chart {
   height: 85vh;
-  width: 300vw;
+  width: 200vw;
   margin: 1rem 0;
   position: relative;
   top: 0;
 }
 
 .annotation-line.horizontal {
-  stroke-opacity: 0;
+  stroke-opacity: 1;
 }
 
 .gridline-y {
-  opacity: 0.2;
+  opacity: 1;
 }
 
 .chart-label {
-  top: 3rem;
+  top: 2rem;
   background-color: #fefefe;
   padding: 1rem;
   z-index: 100;
@@ -41,6 +41,31 @@ body,
 .x-label {
   padding-top: 2rem;
   bottom: -0.25rem;
+}
+
+.chart-label.top-label {
+  font-size: 2.5rem;
+  margin-bottom: 0;
+}
+
+.chart-subtitle {
+  width: 38rem;
+  background-color: #fff;
+  position: fixed;
+  left: 45%;
+  height: 4rem;
+  top: 6rem;
+}
+
+.chart-subtitle ul {
+  display: flex;
+  list-style: none;
+  justify-items: center;
+  align-items: center;
+}
+
+.chart-subtitle ul li {
+  padding: 0 2rem;
 }
 
 .chart-label,
