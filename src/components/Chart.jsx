@@ -38,24 +38,14 @@ export const Chart = () => {
           });
 
         const gridlines = fc.annotationSvgGridline();
+
+        let xScale = d3.scaleTime().nice();
+        const xScale2 = d3.scaleTime().domain(timeSeries);
+
         const annotations = fc
           .annotationSvgLine()
-          .value((d, i) => i)
-          .label((d, i) => i);
-        const pointer = fc.pointer().on("point", (event) => {
-          mainVis.crosshair = event.map(({ x: xVal }) => {
-            const bisectDate = d3.bisector(function (a, b) {
-              return a - b;
-            }).left;
-
-            const closestIndex = bisectDate(
-              mainVis.xAxisSeries,
-              mainVis.chart.xInvert(xVal)
-            );
-            return mainVis.xAxisSeries[closestIndex - 1];
-          });
-          mainVis.render(dom, seriesSelectorStream(), mainVis.chart, pointer);
-        });
+          .xScale(xScale2)
+          .yScale(timeSeries);
 
         const multi = fc
           .seriesSvgMulti()
@@ -68,9 +58,6 @@ export const Chart = () => {
                 return data;
             }
           });
-
-        let xScale = d3.scaleTime().nice();
-        const xScale2 = d3.scaleTime().domain(timeSeries);
 
         mainVis.chart = fc
           .chartCartesian(xScale, d3.scaleLinear())
@@ -139,8 +126,7 @@ export const Chart = () => {
               });
           });
 
-        d3.select(".plot-area").call(pointer);
-        mainVis.render(dom, seriesSelectorStream(), mainVis.chart, pointer);
+        mainVis.render(dom, seriesSelectorStream(), mainVis.chart);
 
         function appendWindIndicator(d, i, domNode) {
           const seriesIndex = mainVis.xAxisSeries.findIndex(

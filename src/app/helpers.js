@@ -131,6 +131,25 @@ export class VisController {
     this._assignXAxisTickValues();
   }
 
+  _bindPointer() {
+    this.pointer = fc.pointer().on(
+      "point",
+      function (event) {
+        this.crosshair = event.map(({ x: xVal }) => {
+          const bisectDate = d3.bisector(function (a, b) {
+            return a - b;
+          }).left;
+
+          const closestIndex = bisectDate(
+            this.xAxisSeries,
+            this.chart.xInvert(xVal)
+          );
+          return this.xAxisSeries[closestIndex - 1];
+        });
+      }.bind(this)
+    );
+  }
+
   //-- PUBLIC METHODS
 
   getSeriesByIndex(i) {
@@ -166,20 +185,14 @@ export class VisController {
     this.numberOfMeasurements = numberOfMeasurements;
 
     this._transformData();
+    this._bindPointer();
   }
 
   // Rendering
-  render(vnode, seriesIndex, chart, pointer) {
-    // console.log("vnode, seriesIndex, chart :>> ", vnode, seriesIndex, chart);
-    // console.log(
-    //   "this.getSeriesByIndex(seriesIndex) :>> ",
-    //   this.getSeriesByIndex(seriesIndex)
-    // );
-    // console.log("this.crosshair :>> ", this.crosshair);
-
+  render(vnode, seriesIndex, chart) {
     d3.select(vnode)
       .datum(this.getSeriesByIndex(seriesIndex)) //.concat([annotations]))
       .call(chart);
-    d3.select(".plot-area").call(pointer);
+    d3.select(".plot-area").call(this.pointer);
   }
 }
