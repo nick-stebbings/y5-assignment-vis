@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { selection } from "d3";
 import * as fc from "d3fc";
 import m from "mithril";
 import * as Stream from "mithril/stream";
@@ -43,13 +44,17 @@ export const Chart = () => {
         const xScale2 = d3.scaleTime().domain(timeSeries);
 
         const annotations = fc
-          .annotationSvgLine()
-          .xScale(xScale2)
-          .yScale(timeSeries);
+          .annotationSvgGridline()
+          .xDecorate((sel) => {
+            // sel.classed("hidden", true);
+            sel.classed("x-annotations", true);
+          })
+          .xTicks(192 / 4)
+          .xScale(xScale2);
 
         const multi = fc
           .seriesSvgMulti()
-          .series([gridlines].concat(line).concat([annotations, point]))
+          .series([gridlines, annotations].concat(line).concat([point]))
           .mapping((data, index, series) => {
             switch (series[index]) {
               case point:

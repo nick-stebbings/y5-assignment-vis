@@ -14,6 +14,10 @@ body,
   overflow-y: hidden;
 }
 
+.hidden {
+  display: none;
+}
+
 /* Chart */
 .chart {
   height: 85vh;
@@ -29,6 +33,15 @@ body,
 
 .gridline-y {
   opacity: 1;
+}
+
+.x-annotations {
+  color: cadetblue;
+  opacity: 0.2;
+}
+.x-annotations:hover {
+  color: black;
+  opacity: 0.9;
 }
 
 .chart-label {
