@@ -157,10 +157,10 @@ export class VisController {
             this.chart.xInvert(xVal)
           );
           if (currentIndexOnXAxis !== closestIndex) {
-            currentIndexOnXAxis = Math.floor(closestIndex / 3);
+            currentIndexOnXAxis = Math.floor(closestIndex);
             console.log("currentIndexOnXAxis :>> ", currentIndexOnXAxis);
+            this._assignVisibleClassToGridline(currentIndexOnXAxis);
           }
-          this._assignVisibleClassToGridline(currentIndexOnXAxis);
 
           return this.xAxisSeries[closestIndex - 1];
         });

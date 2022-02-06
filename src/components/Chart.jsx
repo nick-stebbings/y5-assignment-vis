@@ -32,10 +32,7 @@ export const Chart = () => {
           .seriesSvgPoint()
           .crossValue(xAccessor)
           .mainValue(yAccessor)
-          .size(25)
-          .decorate((selection) => {
-            selection.enter().append("div");
-          });
+          .size(25);
 
         const gridlines = fc.annotationSvgGridline();
 
@@ -48,7 +45,7 @@ export const Chart = () => {
             sel.classed("hidden", true);
             sel.classed("x-annotations", true);
           })
-          .xTicks(192 / 4)
+          .xTicks(192)
           .xScale(xScale2);
 
         const multi = fc

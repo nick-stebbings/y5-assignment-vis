@@ -44,6 +44,17 @@ body,
   color: black;
   opacity: 0.9;
   margin: 0 10px;
+  position: relative;
+}
+
+.x-annotations::after {
+  content: "";
+  background-color: red;
+  position: absolute;
+  left: 2rem;
+  top: 2rem;
+  width: 12rem;
+  height: 12rem;
 }
 
 .chart-label {
