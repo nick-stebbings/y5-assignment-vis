@@ -18,6 +18,11 @@ body,
   display: none;
 }
 
+.visible {
+  display: initial;
+  stroke-width: 3px;
+}
+
 /* Chart */
 .chart {
   height: 85vh;
@@ -36,12 +41,9 @@ body,
 }
 
 .x-annotations {
-  color: cadetblue;
-  opacity: 0.2;
-}
-.x-annotations:hover {
   color: black;
   opacity: 0.9;
+  margin: 0 10px;
 }
 
 .chart-label {

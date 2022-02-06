@@ -34,8 +34,7 @@ export const Chart = () => {
           .mainValue(yAccessor)
           .size(25)
           .decorate((selection) => {
-            selection.enter().append("text");
-            selection.select("text").text(yAccessor);
+            selection.enter().append("div");
           });
 
         const gridlines = fc.annotationSvgGridline();
@@ -46,7 +45,7 @@ export const Chart = () => {
         const annotations = fc
           .annotationSvgGridline()
           .xDecorate((sel) => {
-            // sel.classed("hidden", true);
+            sel.classed("hidden", true);
             sel.classed("x-annotations", true);
           })
           .xTicks(192 / 4)

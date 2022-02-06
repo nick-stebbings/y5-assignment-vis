@@ -131,7 +131,19 @@ export class VisController {
     this._assignXAxisTickValues();
   }
 
+  _assignVisibleClassToGridline(currentIndexOnXAxis) {
+    const activeGridlineClassList =
+      document.querySelectorAll(".x-annotations")[currentIndexOnXAxis]
+        .classList;
+
+    [...document.querySelectorAll(".visible")].forEach((element) => {
+      element.classList.remove("visible");
+    });
+    activeGridlineClassList.add("visible");
+  }
+
   _bindPointer() {
+    let currentIndexOnXAxis = 0;
     this.pointer = fc.pointer().on(
       "point",
       function (event) {
@@ -144,6 +156,12 @@ export class VisController {
             this.xAxisSeries,
             this.chart.xInvert(xVal)
           );
+          if (currentIndexOnXAxis !== closestIndex) {
+            currentIndexOnXAxis = Math.floor(closestIndex / 3);
+            console.log("currentIndexOnXAxis :>> ", currentIndexOnXAxis);
+          }
+          this._assignVisibleClassToGridline(currentIndexOnXAxis);
+
           return this.xAxisSeries[closestIndex - 1];
         });
       }.bind(this)
