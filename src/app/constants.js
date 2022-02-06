@@ -45,6 +45,6 @@ export const HEADINGS_INFO = {
 
 export const METRE_MEASURED_SERIES_INDICES = [
   2, 3, 9, 10, 15, 16, 22, 23, 35, 38,
-];
+].map((el) => el - 1);
 
 export const NUMBER_OF_MEASUREMENTS = 40;

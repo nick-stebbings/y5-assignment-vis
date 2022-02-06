@@ -8,7 +8,7 @@ import { HEADINGS_INFO, METRE_MEASURED_SERIES_INDICES } from "./app/constants";
 import { VisController } from "./app/helpers";
 
 export const App = () => {
-  const seriesSelectedIndices = Stream([2]);
+  const seriesSelectedIndex = Stream([2]);
   const selectedIndex = Stream([0]);
 
   const mainVis = new VisController();
@@ -17,44 +17,45 @@ export const App = () => {
       return (
         <div>
           <div className="series-selector">
-            <select
-              value={
-                Object.values(HEADINGS_INFO)[
-                  METRE_MEASURED_SERIES_INDICES[selectedIndex()]
-                ]
-              }
-              onchange={(e) => {
-                selectedIndex(e.target.selectedIndex);
+            <label>
+              Choose a series for the main chart:
+              <select
+                name="series-choice"
+                value={
+                  Object.values(HEADINGS_INFO)[
+                    METRE_MEASURED_SERIES_INDICES[selectedIndex()]
+                  ]
+                }
+                onchange={(e) => {
+                  selectedIndex(e.target.selectedIndex + 1);
 
-                seriesSelectedIndices([
-                  METRE_MEASURED_SERIES_INDICES[selectedIndex()],
-                ]);
+                  seriesSelectedIndex([
+                    METRE_MEASURED_SERIES_INDICES[selectedIndex()],
+                  ]);
 
-                const chartDomNode = document.querySelector(".chart");
-                mainVis.chart.yDomain(
-                  mainVis.getExtentByIndex(selectedIndex())
-                );
+                  const chartDomNode = document.querySelector(".chart");
+                  mainVis.chart.yDomain(
+                    mainVis.getExtentByIndex(selectedIndex())
+                  );
 
-                mainVis.render(
-                  chartDomNode,
-                  seriesSelectedIndices(),
-                  mainVis.chart
-                );
-              }}
-            >
-              {Object.values(HEADINGS_INFO)
-                .filter((_, idx) => {
-                  return METRE_MEASURED_SERIES_INDICES.includes(idx);
-                })
-                .map((heading, idx) => (
-                  <option>{heading}</option>
-                ))}
-            </select>
+                  mainVis.render(
+                    chartDomNode,
+                    seriesSelectedIndex(),
+                    mainVis.chart
+                  );
+                }}
+              >
+                {Object.values(HEADINGS_INFO)
+                  .filter((_, idx) => {
+                    return METRE_MEASURED_SERIES_INDICES.includes(idx);
+                  })
+                  .map((heading, idx) => (
+                    <option>{heading}</option>
+                  ))}
+              </select>
+            </label>
           </div>
-          <Chart
-            mainVis={mainVis}
-            seriesSelectorStream={seriesSelectedIndices}
-          />
+          <Chart mainVis={mainVis} seriesSelectorStream={seriesSelectedIndex} />
         </div>
       );
     },
